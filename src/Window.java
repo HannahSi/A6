@@ -163,7 +163,9 @@ class Window extends JFrame implements ActionListener, ChangeListener {
         Object s= e.getSource();
         if (s == toolSizeSlider) {
             // TODO: #01. Implement me!
-            
+        		canvas.setToolSize(toolSizeSlider.getValue());
+            toolSizeLabel.setText("Tool Size: " + canvas.getToolSize());	
+                 //instructions are vague so I'm not too sure if I need to update toolSizeLabel too
         } else {
             System.err.println("stateChanged: " + s);
         }
@@ -171,8 +173,14 @@ class Window extends JFrame implements ActionListener, ChangeListener {
 
     /** Update the image size (dimensions) label, sizeLabel */
     private void updateSizeLabel() {
-        // TODO: #02 Implement me! This depends on the 
-        
+        //TODO: #02 Implement me!
+        // The image is in a field in class Canvas.
+        // You have to retrieve the image to get its width and height.
+        // A field in class Window gives you a pointer to the Canvas object.
+    		
+    		lastImgWidth = canvas.getImg().getWidth();
+    		lastImgHeight = canvas.getImg().getHeight();
+        sizeLabel.setText("Image Size: (" + lastImgWidth + ", " + lastImgHeight + ")"); 
     }
 
     /** Called to process action new */

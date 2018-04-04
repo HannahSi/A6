@@ -154,7 +154,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         
         // Passes current mouse position to window
         // TODO #06 Implement me!
-
+        int x = (int) mousePos.getX();	//not sure if I should round or cast (rounding requires Math)
+        int y = (int) mousePos.getY();
+        window.setMousePosition(x, y);
 
         // Draws temporary line 
         drawTempLine(e);
@@ -229,7 +231,16 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     	 */
     private void colorClick(Graphics2D g2d, Color c, int x, int y) {
     	// TODO #07 Implement me!
+    		double topLeftX = x - toolSize/2;
+    		double topLeftY = y - toolSize/2;
+        Shape rect= new Rectangle2D.Double(topLeftX, topLeftY, toolSize, toolSize);
 
+        g2d.setColor(c);
+        g2d.draw(rect);
+        g2d.fill(rect);
+        
+        window.setImageUnsaved();
+        repaint();
     }
     
     /** Draws a line with color c and stroke toolSize from
@@ -237,7 +248,36 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
      */
     private void colorDrag(Graphics2D g2d, Color c) {
     	// TODO #08 Implement me!
+    		if (activeTool == Tool.PENCIL || activeTool == Tool.ERASER) {
+    			BasicStroke stroke = 
+    					new BasicStroke(toolSize, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
+    			drawLine(g2d, mousePosPrev, mousePos, c, stroke);
+    			repaint();
+    		}
+    }
+    
+    /** Draws a line with given Color c and BasicStroke with 
+     *  the two given points (from initPos to finalPos)
+     */
+    private void drawLine(Graphics2D g2d, Point2D.Double initPos, Point2D.Double finalPos, 
+    							Color c, BasicStroke stroke) {
+		double x1 = initPos.getX();
+		double y1 = initPos.getY();
+		double x2 = finalPos.getX();
+		double y2 = finalPos.getY();
 
+    		Shape line = new Line2D.Double(x1, y1, x2, y2);
+    		//Shape circle = new Ellipse2D.Double(x1, y1, toolSize/2, toolSize/2);
+    		
+    		/* circle shape code for trying to make the line not jagged, but was unsuccessful
+    		 * "It's OK if the line looks jagged when the tool size is bigger. 
+    		 * But some people experiment and find ways to improve, perhaps using 
+    		 * a different shape to draw." - from piazza post 1242
+    		*/
+    		
+    		g2d.draw(line);
+    		g2d.setColor(c);
+    		g2d.fill(stroke.createStrokedShape(line));
     }
     
     /** Airbrush with the current foreground color in a square of size

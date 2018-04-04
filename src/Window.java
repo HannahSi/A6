@@ -321,7 +321,11 @@ class Window extends JFrame implements ActionListener, ChangeListener {
     		g.setColor(c);
     		g.fillRect(0, 0, size, size);
     		
+<<<<<<< HEAD
     		return new ImageIcon(img);
+=======
+    		return new ImageIcon(img);
+>>>>>>> e3d6af06243b906578f93048a45f07768c6fde88
     }
 
     /** Process event e from the toolbar */

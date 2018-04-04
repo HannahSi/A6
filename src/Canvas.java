@@ -231,13 +231,11 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     	 */
     private void colorClick(Graphics2D g2d, Color c, int x, int y) {
     	// TODO #07 Implement me!
-    		double topLeftX = x - toolSize/2;
-    		double topLeftY = y - toolSize/2;
-        Shape rect= new Rectangle2D.Double(topLeftX, topLeftY, toolSize, toolSize);
+    		int topLeftX = x - toolSize/2;
+    		int topLeftY = y - toolSize/2;
 
         g2d.setColor(c);
-        g2d.draw(rect);
-        g2d.fill(rect);
+        g2d.fillRect(topLeftX, topLeftY, toolSize, toolSize);
         
         window.setImageUnsaved();
         repaint();
@@ -252,6 +250,8 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     			BasicStroke stroke = 
     					new BasicStroke(toolSize, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
     			drawLine(g2d, mousePosPrev, mousePos, c, stroke);
+    	        
+    			window.setImageUnsaved();
     			repaint();
     		}
     }
@@ -288,9 +288,42 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
      */
     private void airBrush(Graphics2D g2d, Color c) {
     	// TODO #9 implement me!
-
+    		g2d.setColor(c);
+    		for (Rectangle pixel : getAirbrushPixels(10))
+    			g2d.fill(pixel);
+    		
+        window.setImageUnsaved();
+    		repaint();
+    }
+   
+    /** Return an arraylist of 1x1 Rectangles (pixels) that randomly fill a given percentage
+     *  of a circle centered at the current mouse position and with a radius of toolSize.
+     *  Precondition: percentage is between 0 and 100, inclusive.
+     *  */
+    private ArrayList<Rectangle> getAirbrushPixels(double percentage){
+    		ArrayList<Rectangle> pixels = new ArrayList<Rectangle>();
+ 
+    		int left = (int) Math.round(mousePos.x - toolSize/2.0);
+    		int right = (int) Math.round(mousePos.x + toolSize/2.0);
+    		
+    		for (int x = left; x <= right; x++) {
+    			int top = (int) mousePos.y + arcHeight(x, mousePos.x, toolSize/2.0);
+    			int bottom = (int) mousePos.y - arcHeight(x, toolSize/2.0, mousePos.x);
+    			
+    			for (int y = top; y >= bottom; y--)
+    				if (Math.random() < percentage/100) 
+    					pixels.add(new Rectangle(x, y, 1, 1));
+    		}
+    		return pixels;
     }
     
+    /** Return the height of the circle above its horizontal axis at a given x coordinate, provided its
+     *  radius and the x coordinate of its center.
+     *  Precondition: The distance between xCenter and xCoordinate doesn't exceed the magnitude of the radius
+     *  */
+    private int arcHeight(double xCoordinate, double xCenter, double radius) {
+    		return (int) Math.round(Math.sqrt(Math.pow(radius, 2) - Math.pow(xCenter-xCoordinate,2)));
+    }
 
 
     /** Process the press of the mouse, given by e. */

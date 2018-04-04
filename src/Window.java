@@ -5,8 +5,8 @@
  * If the minutes are 0, change mm to 0. This will help us in
  * extracting times and giving you the average and max.
  * 
- * Name:
- * Netid: 
+ * Name: Clara Song and Hannah Si
+ * Netid: cs2274, hs649
  * What I thought about this assignment:
  *
  *
@@ -165,7 +165,6 @@ class Window extends JFrame implements ActionListener, ChangeListener {
             // TODO: #01. Implement me!
         		canvas.setToolSize(toolSizeSlider.getValue());
             toolSizeLabel.setText("Tool Size: " + canvas.getToolSize());	
-                 //instructions are vague so I'm not too sure if I need to update toolSizeLabel too
         } else {
             System.err.println("stateChanged: " + s);
         }
@@ -316,8 +315,13 @@ class Window extends JFrame implements ActionListener, ChangeListener {
      * to be used as an icon for the foreground/background color buttons.  */
     private static ImageIcon getIcon(Color c, int size) {
         // TODO: #03. Implement me!
+    		BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
 
-	return null;
+    		Graphics2D g = img.createGraphics();
+    		g.setColor(c);
+    		g.fillRect(0, 0, size, size);
+    		
+    		return new ImageIcon(img);
     }
 
     /** Process event e from the toolbar */
@@ -347,14 +351,21 @@ class Window extends JFrame implements ActionListener, ChangeListener {
             Color newColor= JColorChooser.showDialog(
                     this,"Foreground Color", canvas.foreGroundColor());
             // TODO: #04. Implement me!
-
+            if (foreColorButton == null || newColor == null) return;
+            
+            canvas.setForeGroundColor(newColor);
+            updateForeColor();
+            
             return; // Don't delete this return
         }
         if (s == backColorButton) {
             Color newBackColor= JColorChooser.showDialog(
                     this,"Background Color", canvas.backGroundColor());
             // TODO: #05. Implement me!
-            if (backColorButton == null) return;
+            if (backColorButton == null || newBackColor == null) return; 
+            
+            canvas.setBackGroundColor(newBackColor);	
+            updateBackColor();
             
             return; // Don't delete this return
         }

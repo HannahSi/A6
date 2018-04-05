@@ -308,7 +308,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     		
     		for (int x = left; x <= right; x++) {
     			int top = (int) mousePos.y + arcHeight(x, mousePos.x, toolSize/2.0);
-    			int bottom = (int) mousePos.y - arcHeight(x, toolSize/2.0, mousePos.x);
+    			int bottom = (int) mousePos.y - arcHeight(x, mousePos.x, toolSize/2.0);
     			
     			for (int y = top; y >= bottom; y--)
     				if (Math.random() < percentage/100) 

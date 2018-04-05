@@ -154,16 +154,12 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         
         // Passes current mouse position to window
         // TODO #06 Implement me!
-        int x = (int) mousePos.getX();	//not sure if I should round or cast (rounding requires Math)
-        int y = (int) mousePos.getY();
+        int x = (int) (mousePos.getX() + 0.5);	//adding 0.5 and then truncating essentially rounds
+        int y = (int) (mousePos.getY() + 0.5);
         window.setMousePosition(x, y);
 
         // Draws temporary line 
         drawTempLine(e);
-
-
-
-
     }
 
 
@@ -247,37 +243,13 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     private void colorDrag(Graphics2D g2d, Color c) {
     	// TODO #08 Implement me!
     		if (activeTool == Tool.PENCIL || activeTool == Tool.ERASER) {
-    			BasicStroke stroke = 
-    					new BasicStroke(toolSize, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
-    			drawLine(g2d, mousePosPrev, mousePos, c, stroke);
-    	        
-    			window.setImageUnsaved();
+    	        g2d.setColor(c);
+    			g2d.setStroke(new BasicStroke(toolSize));
+    	        g2d.drawLine((int) mousePosPrev.x, (int) mousePosPrev.y, (int) mousePos.x, (int) mousePos.y);
+    			
+    	        window.setImageUnsaved();
     			repaint();
     		}
-    }
-    
-    /** Draws a line with given Color c and BasicStroke with 
-     *  the two given points (from initPos to finalPos)
-     */
-    private void drawLine(Graphics2D g2d, Point2D.Double initPos, Point2D.Double finalPos, 
-    							Color c, BasicStroke stroke) {
-		double x1 = initPos.getX();
-		double y1 = initPos.getY();
-		double x2 = finalPos.getX();
-		double y2 = finalPos.getY();
-
-    		Shape line = new Line2D.Double(x1, y1, x2, y2);
-    		//Shape circle = new Ellipse2D.Double(x1, y1, toolSize/2, toolSize/2);
-    		
-    		/* circle shape code for trying to make the line not jagged, but was unsuccessful
-    		 * "It's OK if the line looks jagged when the tool size is bigger. 
-    		 * But some people experiment and find ways to improve, perhaps using 
-    		 * a different shape to draw." - from piazza post 1242
-    		*/
-    		
-    		g2d.draw(line);
-    		g2d.setColor(c);
-    		g2d.fill(stroke.createStrokedShape(line));
     }
     
     /** Airbrush with the current foreground color in a square of size
@@ -308,10 +280,10 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     		
     		for (int x = left; x <= right; x++) {
     			int top = (int) mousePos.y + arcHeight(x, mousePos.x, toolSize/2.0);
-    			int bottom = (int) mousePos.y - arcHeight(x, toolSize/2.0, mousePos.x);
+    			int bottom = (int) mousePos.y - arcHeight(x, mousePos.x, toolSize/2.0);
     			
     			for (int y = top; y >= bottom; y--)
-    				if (Math.random() < percentage/100) 
+    				if (random.nextDouble() < percentage/100) 
     					pixels.add(new Rectangle(x, y, 1, 1));
     		}
     		return pixels;
@@ -357,7 +329,17 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
             // this IS the first mouse press; record it.
             // If one has already been made, this is the second mouse press;
             // draw the line.
-
+            if (!pointPressed) {
+            		pointPressed = true;
+            		firstPoint = new Point2D.Double(e.getX() + 0.5, e.getY() + 0.5);
+            }
+            else {
+            		pointPressed = false;
+            		g2d.setColor(foreColor);
+        	        g2d.setStroke(new BasicStroke(toolSize));
+        	        g2d.drawLine((int) firstPoint.x, (int) firstPoint.y, e.getX(), e.getY());
+            		window.setImageUnsaved();
+            }
         }
         else if (activeTool == Tool.AIRBRUSH) {
             System.out.println("mousePressed: airbrush");
@@ -416,7 +398,8 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         // TODO #10b. Implement me!
         // If the active tool is the Line  and the first mouse 
         // press has been recognized,  repaint().
-
+        if (activeTool == Tool.LINE && pointPressed)
+	        repaint();
     }
     
     /** Paint this component using g. */
@@ -441,8 +424,11 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         // TODO: #10c. Implement me!
         // If the active tool is the LINE and the first point has been pressed,
         // draw the line on g2d using the foreColor and toolSize.
-
-
+        if (activeTool == Tool.LINE && pointPressed) {
+	        	g2d.setColor(foreColor);
+	        g2d.setStroke(new BasicStroke(toolSize));
+	        g2d.drawLine((int) firstPoint.x, (int) firstPoint.y, (int) mousePos.x, (int) mousePos.y);
+        }
     }
 
 

@@ -352,7 +352,7 @@ class Window extends JFrame implements ActionListener, ChangeListener {
             Color newColor= JColorChooser.showDialog(
                     this,"Foreground Color", canvas.foreGroundColor());
             // TODO: #04. Implement me!
-            if (foreColorButton == null || newColor == null) return;
+            if (newColor == null) return;
             
             canvas.setForeGroundColor(newColor);
             updateForeColor();
@@ -363,7 +363,7 @@ class Window extends JFrame implements ActionListener, ChangeListener {
             Color newBackColor= JColorChooser.showDialog(
                     this,"Background Color", canvas.backGroundColor());
             // TODO: #05. Implement me!
-            if (backColorButton == null || newBackColor == null) return; 
+            if (newBackColor == null) return; 
             
             canvas.setBackGroundColor(newBackColor);	
             updateBackColor();

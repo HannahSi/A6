@@ -1,4 +1,4 @@
-/* Time spent on a6:  hh hours and mm minutes.
+/* Time spent on a6:  8 hours and 0 minutes.
  *
  * When you change the above, please do it carefully. Change hh to
  * the hours and mm to the minutes and leave everything else as is.
@@ -8,8 +8,9 @@
  * Name: Clara Song and Hannah Si
  * Netid: cs2274, hs649
  * What I thought about this assignment:
- *
- *
+ * It made us appreciate the program "Paint" when comparing our crude version
+ * Learned to teach ourselves programming tools not taught in class (through piazza and the api)
+ * ^which seems like a useful skill to have for more realistic coding projects
  */
 
 import java.io.*;
